@@ -23,3 +23,55 @@ module.exports.createPost = async (req, res) => {
     }
 }
 
+
+module.exports.updatePost = (req, res) => {
+    if (!ObjectId.isValid(req.params.id))
+        return res.status(400).send('Identifiant inconnu : ' + req.params.id);
+    
+    const newDescription = {
+        description: req.body.description,
+        batiment: req.body.batiment,
+        chambre: req.body.chambre
+    }
+    
+    postModel.findByIdAndUpdate(
+        req.params.id,
+        {$set: newDescription},
+        {new: true},
+        (err, docs) => {
+            if(!err) res.send(docs);
+            else console.log("erreur de mise à jour "+err);
+        }
+    )
+}
+
+module.exports.deletePost = (req, res) => {
+    if (!ObjectId.isValid(req.params.id))
+        return res.status(400).send('Identifiant inconnu : ' + req.params.id);
+    
+    postModel.findByIdAndRemove(req.params.id, (err, docs)=>{
+        if(!err) res.send(docs);
+        else console.log("erreur de suppression "+ err);
+    })
+    
+}
+
+module.exports.setState = async (req, res) => {
+    if (!ObjectId.isValid(req.params.id))
+        return res.status(400).send('Identifiant inconnu : ' + req.params.id);
+    const newState = {
+        etat: req.body.etat
+    }
+    postModel.findByIdAndUpdate(
+        req.params.id,
+        {$set: newState},
+        {new: true},
+        (err, docs) => {
+            if(!err) res.send(docs);
+            else console.log("erreur de mise à jour "+err);
+        }
+    )
+}
+
+
+
